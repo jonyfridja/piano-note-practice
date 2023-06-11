@@ -9,7 +9,8 @@
       body {
         padding: 20px;
       }
-      .staff {
+      #scale {
+        margin-top: 20px;
         background-image: url("assets/staff.gif");
         float: left;
         background-repeat: no-repeat;
@@ -21,27 +22,38 @@
         height: 420px;
         display: block;
       }
+
+      #scale #refresh {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        cursor: pointer;
+        border: 1px solid black;
+      }
+
       .note {
+        transition: top 0.2s;
         position: absolute;
         top: 10px;
         width: 60px;
       }
+
       #note-line {
+        transition: all 0.1s;
         width: 100%;
         height: 4px;
         position: absolute;
         bottom: 18px;
         background-color: black;
-        /* display: none; */
         left: -8px;
-        display: none;
+        opacity: 0;
       }
 
       .show {
-        display: unset !important;
+        opacity: 1 !important;
       }
       #output-message {
-        display: none;
+        opacity: 0;
         color: green;
       }
       #output-message.lose {
@@ -50,22 +62,26 @@
     </style>
   </head>
   <body>
-    <div id="g-ladder" class="staff">
+    <div id="scale">
+      <img src="assets/refresh.svg" width="20px" id="refresh" />
       <div id="note" class="note">
         <img width="40px" src="assets/note.png" />
         <div id="note-line"></div>
       </div>
     </div>
-    <form
-      style="display: block"
-      id="note-form"
-      action="#"
-      onsubmit="event.preventDefault()"
-    >
-      <input type="text" id="noteInput" />
-      <button type="submit">GO</button>
-    </form>
+    <div>
+      <form
+        style="display: block"
+        id="note-form"
+        action="#"
+        onsubmit="event.preventDefault()"
+      >
+        <input aria-autocomplete="none" type="text" id="noteInput" />
+        <button type="submit">GO</button>
+      </form>
+    </div>
     <div id="output-message"></div>
-    <script src="./index.js"></script>
+    <div id="hint"></div>
+    <script type="module" src="./index.js"></script>
   </body>
 </html>

@@ -1,17 +1,24 @@
-let note = "E";
-const notes = ["C", "D", "E", "F", "G", "A", "B"];
-const PX_HEIGHT = 17;
-const PX_BASE = 114;
+import {
+  G_SCALE_NOTES,
+  F_SCALE_NOTES,
+  G_SCALE_PX_FROM_TOP_MAP,
+  F_SCALE_PX_FROM_TOP_MAP,
+} from "./consts.js";
+
+let note = "A2";
+let scale = "G";
+
+function getNotesByScale(scale) {
+  return scale === "G" ? G_SCALE_NOTES : F_SCALE_NOTES;
+}
 
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("load");
   document
     .getElementById("note-form")
     .addEventListener("submit", handleFormSubmit);
-  //
+  document.getElementById("refresh").addEventListener("click", () => next());
 
-  generateNote();
-  render();
+  next();
 });
 
 /**
@@ -21,11 +28,9 @@ function handleFormSubmit(e) {
   e.preventDefault();
 
   const noteInput = document.getElementById("noteInput");
-  const noteValue = noteInput.value;
-  const isRight = noteValue === note;
+  const isRight = note.includes(noteInput.value);
   const message = isRight ? "Correct!" : "Wrong!";
   const outputMessageEl = document.getElementById("output-message");
-  debugger;
   outputMessageEl.innerText = message;
   outputMessageEl.classList.remove("lose");
   if (!isRight) {
@@ -37,22 +42,47 @@ function handleFormSubmit(e) {
 
   setTimeout(() => {
     outputMessageEl.classList.remove("show");
+    next();
   }, 1000);
 }
 
 function generateNote() {
+  const notes = getNotesByScale(scale);
   note = notes[Math.floor(Math.random() * notes.length)];
 }
 
+function randomizeScale() {
+  scale = Math.random() > 0.5 ? "G" : "F";
+}
+
 function render() {
-  const displayLine = note === "C";
+  const isGScale = scale === "G";
+  const pxMap = isGScale ? G_SCALE_PX_FROM_TOP_MAP : F_SCALE_PX_FROM_TOP_MAP;
+  const px = pxMap[note];
+
   document.getElementById("note-line").classList.remove("show");
+  let displayLine = false;
+  if (isGScale) {
+    displayLine = note === "C" || note === "A2";
+  }
+
+  if (!isGScale) {
+    displayLine = note === "E" || note === "C2";
+  }
 
   if (displayLine) {
     document.getElementById("note-line").classList.add("show");
   }
-  const px = PX_BASE - notes.indexOf(note) * PX_HEIGHT;
-  //   const px = PX_BASE;
-  console.log(px);
+
+  document.getElementById(
+    "hint"
+  ).innerText = `Hint: note: ${note}. scale: ${scale}`;
   document.getElementById("note").style.top = `${px}px`;
+}
+
+function next() {
+  document.getElementById("noteInput").value = "";
+  generateNote();
+  randomizeScale();
+  render();
 }
